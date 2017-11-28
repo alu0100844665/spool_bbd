@@ -1,0 +1,275 @@
+SQL> SELECT SYSDATE
+  2  FROM DUAL;
+
+SYSDATE                                                                         
+---------                                                                       
+28-NOV-17                                                                       
+
+SQL> SELECT TO_CHAR(SYSDATE,'MM:MI:SS')
+  2  FROM DUAL;
+
+TO_CHAR(                                                                        
+--------                                                                        
+11:07:25                                                                        
+
+SQL> SELECT TO_CHAR(SYSDATE,'DAY-DD-MM-YYYY')
+  2  FROM DUAL;
+
+TO_CHAR(SYSDATE,'DAY-DD-MM-YYYY')                                               
+-----------------------------------------------                                 
+TUESDAY  -28-11-2017                                                            
+
+SQL> SELECT TO_CHAR(SYSDATE,'HH24:MI:SS')
+  2  FROM DUAL;
+
+TO_CHAR(                                                                        
+--------                                                                        
+12:10:38                                                                        
+
+SQL> SELECT SYSDATE-FI
+  2  FROM PLAN_DOCENTE
+  3  WHERE CAS=11 AND DNI=8888;
+
+SYSDATE-FI                                                                      
+----------                                                                      
+ 3010.5089                                                                      
+
+SQL> SELECT P
+  2  FROM PROFESOR
+  3  WHERE DNI IN (SELECT DNI
+  4  FROM PLAN_DOCENTE
+  5  WHERE SYSDATE-FI > 365);
+
+P                                                                               
+------------------------------------------------------------                    
+JUAN                                                                            
+CARLOS                                                                          
+PEDRO                                                                           
+MARIA                                                                           
+IVAN                                                                            
+CARMEN                                                                          
+MARIO                                                                           
+FRANCISCO                                                                       
+ANGELA                                                                          
+DAVID                                                                           
+SOLEDAD                                                                         
+
+P                                                                               
+------------------------------------------------------------                    
+JOSE MANUEL                                                                     
+
+12 rows selected.
+
+SQL> SELECT COUNT(DNI)
+  2  FROM PROFESOR
+  3  WHERE CAR IN (SELECT CAR
+  4  FROM AREA
+  5  WHERE CD IN (SELECT CD
+  6  FROM DEPARTAMENTO
+  7  WHERE D='ASTROFISICA'));
+
+COUNT(DNI)                                                                      
+----------                                                                      
+         1                                                                      
+
+SQL> SELECT COUNT(DNI)
+  2  FROM PROFESOR NATURAL JOIN AREA
+  3  GROUP BY CD;
+
+COUNT(DNI)                                                                      
+----------                                                                      
+         4                                                                      
+         1                                                                      
+         1                                                                      
+         8                                                                      
+
+SQL> SELECT DISTINCT T
+  2  FROM ASIGNATURA NATURAL JOIN AREA
+  3  WHERE CD=3;
+
+T                                                                               
+----                                                                            
+GII                                                                             
+MII                                                                             
+
+SQL> SELECT COUNT(P)
+  2  FROM PROFESOR NATURAL JOIN AREA
+  3  WHERE AR LIKE 'A%';
+
+  COUNT(P)                                                                      
+----------                                                                      
+         3                                                                      
+
+SQL> SELECT COUNT (A)
+  2  FROM ASIGNATURA
+  3  GROUP BY T;
+
+  COUNT(A)                                                                      
+----------                                                                      
+         1                                                                      
+         2                                                                      
+         7                                                                      
+         2                                                                      
+
+SQL> SELECT A
+  2  FROM ASIGNATURA
+  3  WHERE CT >=(SELECT MAX(CT)
+  4  FROM ASIGNATURA);
+
+A                                                                               
+--------------------------------------------------                              
+ENSENANZA DE LA MATEMATICA                                                      
+
+SQL> L
+  1  SELECT A
+  2  FROM ASIGNATURA
+  3  WHERE CT >=(SELECT MAX(CT)
+  4* FROM ASIGNATURA)
+SQL> D 4
+SP2-0042: unknown command "D 4" - rest of line ignored.
+SQL> DEL 4
+SQL> L
+  1  SELECT A
+  2  FROM ASIGNATURA
+  3* WHERE CT >=(SELECT MAX(CT)
+SQL> DEL 3
+SQL> I WHERE CT<=(SELECT MIN(CT)
+SQL> I FROM ASIGNATURA);
+SQL> RUN
+  1  SELECT A
+  2  FROM ASIGNATURA
+  3  WHERE CT<=(SELECT MIN(CT)
+  4* FROM ASIGNATURA)
+
+A                                                                               
+--------------------------------------------------                              
+INTELIGENCIA ARTIFICIAL                                                         
+ALMACENES DE DATOS                                                              
+MINERIA DE DATOS                                                                
+
+SQL> SELECT SUM(CT+CP+CL)
+  2  FROM ASIGNATURA
+  3  GROUP BY A;
+
+SUM(CT+CP+CL)                                                                   
+-------------                                                                   
+            6                                                                   
+            6                                                                   
+            6                                                                   
+            6                                                                   
+            6                                                                   
+            6                                                                   
+          7.5                                                                   
+            6                                                                   
+            6                                                                   
+            3                                                                   
+            3                                                                   
+
+SUM(CT+CP+CL)                                                                   
+-------------                                                                   
+            6                                                                   
+
+12 rows selected.
+
+SQL> SELECT A
+  2  FROM ASIGNATURA
+  3  WHERE CT+CP+CL>=(SELECT MAX(CT+CP+CL)
+  4  FROM ASIGNATURA);
+
+A                                                                               
+--------------------------------------------------                              
+ANALISIS COMPLEJO                                                               
+
+SQL> SELECT A
+  2  FROM ASIGNATURA
+  3  WHERE CT+CP+CL <=(SELECT MIN(CT+CP+CL)
+  4  FROM ASIGNATURA);
+
+A                                                                               
+--------------------------------------------------                              
+ALMACENES DE DATOS                                                              
+MINERIA DE DATOS                                                                
+
+SQL> 
+SQL> SELECT AR
+  2  FROM AREA
+  3  WHERE CAR IN (SELECT CAR
+  4  FROM ASIGNATURA
+  5  WHERE CT+CP+CL=(SELECT MAX(CT+CP+CL)
+  6  FROM ASIGNATURA));
+
+AR                                                                              
+------------------------------------------------------------                    
+ANALISIS MATEMATICO                                                             
+
+SQL> SELECT DISTINCT A
+  2  FROM ASIGNATURA NATURAL JOIN PLAN_DOCENTE
+  3  WHERE DNI=1111;
+
+A                                                                               
+--------------------------------------------------                              
+OPTIMIZACION                                                                    
+
+SQL> SELECT SUM(CTA+CPA+CLA)
+  2  FROM PLAN_DOCENTE
+  3  WHERE DNI=1111;
+
+SUM(CTA+CPA+CLA)                                                                
+----------------                                                                
+               9                                                                
+
+SQL> SELECT P
+  2  FROM PROFESOR PRO,PLAN_DOCENTE PLND
+  3  WHERE(PRO.DNI=PLND.DNI) AND (FF IS NULL)
+  4  GROUP BY PRO.DNI,PRO.P
+  5  HAVING SUM(CTA+CPA+CLA)>=ALL(SELECT SUM(CTA+CPA+CLA)
+  6  FROM PLAN_DOCENTE
+  7  WHERE FF IS NULL
+  8  GROUP BY DNI);
+
+P                                                                               
+------------------------------------------------------------                    
+MARIA                                                                           
+PEDRO                                                                           
+
+SQL> SELECT AVG(COUNT(*))
+  2  FROM ASIGNATURA
+  3  GROUP BY CAR;
+
+AVG(COUNT(*))                                                                   
+-------------                                                                   
+          1.5                                                                   
+
+SQL> SELECT AVG(COUNT(*))
+  2  FROM PROFESOR NATURAL JOIN AREA
+  3  GROUP BY CD;
+
+AVG(COUNT(*))                                                                   
+-------------                                                                   
+          3.5                                                                   
+
+SQL> SELECT AR
+  2  FROM AREA NATURAL JOIN ASIGNATURA
+  3  GROUP BY AR
+  4  HAVING COUNT (A) > 3;
+
+AR                                                                              
+------------------------------------------------------------                    
+LENGUAJES Y SISTEMAS INFORMATICOS                                               
+
+SQL> DEL 4
+SQL> I HAVING COUNT (A) > 6;
+SQL> ;
+  1  SELECT AR
+  2  FROM AREA NATURAL JOIN ASIGNATURA
+  3  GROUP BY AR
+  4* HAVING COUNT (A) > 6
+SQL> RUN
+  1  SELECT AR
+  2  FROM AREA NATURAL JOIN ASIGNATURA
+  3  GROUP BY AR
+  4* HAVING COUNT (A) > 6
+
+no rows selected
+
+SQL> SPOOL OFF
