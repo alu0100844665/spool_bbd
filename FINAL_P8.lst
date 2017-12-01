@@ -1,0 +1,29 @@
+SQL> REVOKE ALL PRIVILEGES
+  2  ON DEPARTAMENTO
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> REVOKE ALL PRIVILEGES
+  2  ON AREA
+  3  REVOKE ALL PRIVILEGES
+  4  
+SQL> REVOKE ALL PRIVILEGES
+  2  ON AREA
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> REVOKE ALL PRIVILEGES
+  2  ON ASIGNATURA
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> REVOKE ALL PRIVILEGES
+  2  ON TITULACION
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> SPOOL OFF
